@@ -1,5 +1,4 @@
 FROM debian:bullseye-slim
-MAINTAINER appotry <andycrusoe@gmail.com>
 
 LABEL maintainer="andycrusoe@gmail.com"
 LABEL repository="https://github.com/appotry/docker-gitbook"
@@ -19,7 +18,11 @@ ENV GIT_USERNAME="" \
     GIT_BRANCH="gh-pages" \
     GIT_COMMIT_MESSAGE="Gitbook updated:"
 
-ENV NPM_CONFIG_LOGLEVEL info
+ARG NPM_CONFIG_LOGLEVEL=info
+ARG NODE_MAJOR=20
+
+ENV NPM_CONFIG_LOGLEVEL=${NPM_CONFIG_LOGLEVEL}
+ENV NODE_MAJOR=${NODE_MAJOR}
 
 # build-essential
 # Install Utilities
@@ -43,7 +46,6 @@ RUN apt-get update && \
 # https://github.com/nodesource/distributions?tab=readme-ov-file#installation-instructions
 RUN mkdir -p /etc/apt/keyrings && \
     curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
-    NODE_MAJOR=20 && \
     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends nodejs && \
@@ -84,7 +86,7 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-ENV BOOKDIR /gitbook
+ENV BOOKDIR=/gitbook
 
 VOLUME $BOOKDIR
 
